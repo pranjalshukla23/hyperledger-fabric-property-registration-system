@@ -1,0 +1,114 @@
+1. to automate the fabric set up : ./fabricNetwork.sh up
+
+2. to install and instantiate the chainocode : ./fabricNetwork.sh install
+
+3. to start the network : docker-compose -f ./docker-compose.yml up -d
+
+4. start the chaincode service for user by SSH into chaincode container for user:
+   
+      docker exec -it chaincode /bin/bash
+      npm install
+      npm run start-dev
+
+5. SSH into user to invoke the functions of users:
+
+   docker exec -it peer0.users.property-registration-network.com /bin/bash
+
+6.start the chaincode service for registrar by ssh into chaincode container of registrar: 
+
+docker exec -it chaincode /bin/bash
+npm install
+npm run start-dev1
+
+7. SSH into the registrar to invoke the funtions of registrar:
+
+docker exec -it peer0.registrar.property-registration-network.com /bin/bash
+
+8. requestNewUser in user chaincode container:
+
+  a. user - pranjal
+
+  peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:requestNewUser","pranjal","75278194263","pranjal@gmail.com","98216547"]}'
+
+  b. user - vijay
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:requestNewUser","vijay","75278194263","vijay@gmail.com","9821"]}'
+
+9. approveNewUser in registrar chaincode container:
+
+a.  user - pranjal
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.registrar:approveNewUser","pranjal","75278194263"]}'
+
+b. user - vijay
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.registrar:approveNewUser","vijay","75278194263"]}'
+
+10.  run the coomand rechargeAccount in user chaincode container:
+
+a. user - pranjal
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:rechargeAccount","pranjal","75278194263","upg100"]}'
+
+b. user - vijay
+
+ peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:rechargeAccount","vijay","75278194263","upg100"]}'
+
+11. Run the command viewUser in user or registrar chaincode container:
+
+a. user - pranjal
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:viewUser","pranjal","75278194263"]}'
+
+b. user - vijay
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:viewUser","vijay","75278194263"]}'
+
+ 12. run the command for propertyRegistrationRequest on user chaincode container:
+
+a. user - pranjal
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:propertyRegistrationRequest","pranjal","75278194263","001","600","registered"]}'
+
+13. run the command for approvePropertyRegistration on registrar chaincode container:
+
+run the approvePropertyRegistration on registrar chaincode container:
+
+a. user - pranjal property
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.registrar:approvePropertyRegistration","001"]}'
+
+14. rechargeAccount method invocation to provide vijay with amount to buy property:
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:rechargeAccount","vijay","75278194263","upg1000"]}'
+
+15.  run the viewProperty function on user chaincode container:
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:viewProperty","001"]}'
+
+16. run the updateProperty function on user chaincode  container :
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:updateProperty","008","keshav","75278194263","onSale"]}'
+
+17. run the purchaseProperty function on user chaincode  container :
+
+seller : pranjal
+buyer : vijay
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:purchaseProperty","001","vijay","75278194263"]}'
+
+18. call viewProperty method to check the owner of property:
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:viewProperty","001"]}'
+
+19. check the balance of buyer (vijay) by calling viewUser method in chaincode container , upgradCoins should be deducted:
+
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:viewUser","vijay","75278194263"]}'
+
+20. check the balance of seller (pranjal) by calling viewUser method in chaincode container, upgradCoins should be incremented:
+
+
+peer chaincode invoke -o orderer.property-registration-network.com:7050 -C registrationchannel -n regnet -c '{"Args":["org.property-registration-network.user:viewUser","pranjal","75278194263"]}'
+
+
+
